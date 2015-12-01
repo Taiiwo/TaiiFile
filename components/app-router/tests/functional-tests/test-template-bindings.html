@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>app-router</title>
+    <script src="/bower_components/webcomponentsjs/webcomponents.js" debug></script>
+    <link rel="import" href="/bower_components/polymer/polymer.html">
+    <link rel="import" href="/src/app-router.html">
+  </head>
+  <body>
+
+    <p>Test the different <code>app-route</code> types by navigating through these links.</p>
+    <ul>
+      <li><a href="#/template-binding/1234/route%20args!">/template-binding/1234/route%20args!</a></li>
+      <li><a href="#/custom-element-binding/1234/route%20args!">/custom-element-binding/1234/route%20args!</a></li>
+      <li><a href="#/before-data-binding-event">/before-data-binding-event</a></li>
+      <li><a href="#/no-router-binding">/no-router-binding</a></li>
+    </ul>
+
+    <p>Data binding to templates, testing <code>bindRouter</code>, and <code>bindRouter</code> to get the parent template with <code>router.templateInstance.model</code> bindings.</p>
+
+    <polymer-element name="test-binding-page" attributes="second third router">
+      <template>
+        <h2>parent published attribute - {{router.templateInstance.model.first}}</h2>
+        <h2>route arg bound to custom element - {{second}}</h2>
+        <h2>route arg bound to custom element - {{third}}</h2>
+        <h2>parent property (not published) - {{router.templateInstance.model.fourth}}</h2>
+      </template>
+      <script>
+        Polymer('test-binding-page', {
+          domReady: function() {
+            // dynamic data binding should update the parent's template too
+            this.router.templateInstance.model.first = 'updated 1st arg!';
+          }
+        });
+      </script>
+    </polymer-element>
+
+    <polymer-element name="router-binding-example" attributes="first">
+      <template>
+        <!-- dynamic data binding should update the parent's template when the child sets router.templateInstance.model.first -->
+        <p>In the parent template, first arg - {{first}}</p>
+        <app-router>
+          <app-route path="/custom-element-binding/:second/:third" element="test-binding-page" bindRouter></app-route>
+          <app-route path="/template-binding/:second/:third" bindRouter>
+            <template>
+              <h2>parent published attribute - {{router.templateInstance.model.first}}</h2>
+              <h2>route arg bound to template - {{second}}</h2>
+              <h2>route arg bound to template - {{third}}</h2>
+              <h2>parent property (not published) - {{router.templateInstance.model.fourth}}</h2>
+            </template>
+          </app-route>
+          <app-route path="/no-router-binding">
+            <template>
+              <h2>Parent bindings shouldn't be available in this case.</h2>
+              <h2>parent published attribute - {{router.templateInstance.model.first}}</h2>
+              <h2>parent property (not published) - {{router.templateInstance.model.fourth}}</h2>
+            </template>
+          </app-route>
+          <app-route path="/before-data-binding-event" on-before-data-binding="{{updateRouteModel}}">
+            <template>
+              <h2>Property bound using <code>before-data-binding</code> event - {{newProperty}}</h2>
+            </template>
+          </app-route>
+          <app-route path="*">
+            <template>
+              <h2>Not Found</h2>
+            </template>
+          </app-route>
+        </app-router>
+      </template>
+      <script>
+        Polymer('router-binding-example', {
+          ready: function() {
+            this.fourth = '4th arg!';
+          },
+          firstChanged: function(oldFirst, newFirst) {
+            console.log('parent {{first}} updated: ' + newFirst);
+          },
+          updateRouteModel: function(event) {
+            event.detail.model.newProperty = 'modified model';
+          }
+        });
+      </script>
+    </polymer-element>
+
+    <router-binding-example first="1st arg!"></router-binding-example>
+
+  </body>
+</html>

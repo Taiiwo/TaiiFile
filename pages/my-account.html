@@ -1,0 +1,80 @@
+<dom-module id="my-account">
+    <template>
+        <style>
+            h2 {
+                font-size: 240%;
+            }
+        </style>
+        <div class="register-div">
+        <div class="container">
+            <div id="md">
+### My Account Settings
+
+Welcome to your account settings. Only you can see this page. You can use the
+features on this page to edit key details about your account.
+            </div>
+            <div class="row"><div class="col s12">
+                <div class="input-field col s3">
+                    <input id="password" type="text" class="validate">
+                    <label for="password">Current Password</label>
+                </div>
+                <div class="input-field col s3">
+                    <input id="password1" type="text" class="validate">
+                    <label for="password1">New Password</label>
+                </div>
+                <div class="input-field col s3">
+                    <input id="password2" type="text" class="validate">
+                    <label for="password2">Confirm New Password</label>
+                </div>
+                <div class="col s3">
+                    <a class="waves-effect waves-light btn"><i class="material-icons right">send</i>Change Password</a>
+                </div>
+            </div></div>
+            <a id="delete" class="waves-effect waves-light btn red"><i class="material-icons right">warning</i>Delete Account</a>
+        </div>
+    </template>
+</dom-module>
+<script>
+    Polymer({
+        is: "my-account",
+        attached: function() {
+            // markup markdown
+            site.markdown('#md');
+            
+            // check for auth
+            if ($.cookie('session') == undefined){
+                // user is not logged in, send them to login
+                site.route('/login');
+                var userAuthed = false;
+            }
+            else {
+                var userAuthed = true;
+                var session = $.cookie('session');
+            }
+            if (userAuthed){
+                $('#delete').click(function(){
+                    site.notify(
+                        "Are you sure?",
+                        "This action will delete you entire account, with no" +
+                        " recovery. Are you sure you want to do this?",
+                        [
+                            [
+                                "Yes, delete my account.",
+                                "red",
+                                function(){
+                                    console.log("delete account");
+                                }
+                            ],
+                            [
+                                "No, take me back.",
+                                "green",
+                                site.notify_toggle
+                            ]
+                        ]
+                    );
+                    site.notify_toggle();
+                });
+            }
+        }
+    });
+</script>

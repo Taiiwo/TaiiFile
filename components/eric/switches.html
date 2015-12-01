@@ -1,0 +1,80 @@
+<dom-module id="eric-switches">
+  <template label={{name}}>
+    <style>
+      .txtbox {
+        display:inline-block;
+      }
+      .switch {
+        display: inline-block;
+      }
+
+      #num {
+        margin-left: 30px;
+        display: inline;
+      }
+      #switch1 {
+        float: left;
+      }
+    </style>
+    <div class="col">
+      <p>{{name}}</p>
+      <div class="eric-switches">
+        <div class="switch" id="switch1">
+          <label>
+              No
+            <input type="checkbox" id="inputTag">
+            <span id="switch2" class="lever"></span>
+              Yes
+          </label>
+        </div>
+        <div id="num">
+          <p class="range-field" id="slider1">
+            Number of Devs
+            <input type="range" min="0" max="10" value="0"/>
+            <span class="thumb">
+              <span class="value"></span>
+            </span>
+          </p>
+          <p class="range-field" id="slider2">
+            Skill Level
+            <input type="range" min="0" max="10" value="0"/>
+            <span class="thumb">
+              <span class="value"></span>
+            </span>
+          </p>
+        </div>
+        </div>
+      </div>
+    </div>
+  </template>
+</dom-module>
+<script>
+  Polymer({
+    is: "eric-switches",
+    attached: function() {
+      var swit = $(this.$.switch2);
+      var slider1 = $(this.$.slider1);
+      var slider2 = $(this.$.slider2);
+      slider1.css({opacity: 0});
+      slider2.css({opacity: 0});
+      swit.click(function() {
+        if (slider1.css("opacity") == 0){
+          slider1.animate({
+            opacity: 1
+          }, 300);
+          slider2.animate({
+            opacity: 1
+          }, 300);
+        }
+        else {
+          slider1.animate({
+            opacity: 0
+          }, 500);
+          slider2.animate({
+            opacity: 0
+          }, 500);
+        }
+      });
+    }
+  });
+</script>

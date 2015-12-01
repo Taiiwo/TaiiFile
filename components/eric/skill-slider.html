@@ -1,0 +1,18 @@
+<dom-module id="skill-slider">
+  <template label={{name}}>
+    <p>{{name}}</p>
+    <div class="skillSlider">
+      <p class="range-field">
+        <input type="range" min="0" max="10" value="0" />
+        <span class="thumb">
+          <span class="value"></span>
+        </span>
+      </p>
+    </div>
+  </template>
+</dom-module>
+<script>
+  Polymer({
+    is: "skill-slider"
+  })
+</script>

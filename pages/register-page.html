@@ -1,0 +1,76 @@
+<link rel="import" href="../components/eric/skill-slider.html" />
+<dom-module id="register-page">
+    <template>
+        <style>
+            h2 {
+                font-size: 240%;
+            }
+            .skillSlider {
+                width: 100%;
+                max-width: 440px;
+            }
+        </style>
+        <div class="register-div">
+        <div class="container">
+            <h2>Sign Up</h2>
+            <div class="row">
+                <div class="input-field col s6">
+                    <input value="" id="user" type="text" class="validate" pattern="\w{1,140}">
+                    <label class="active" for="user" data-error="Too long!">Username</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s6">
+                    <input value="" id="passw" type="password" class="validate"  pattern=".{6,140}">
+                    <label data-error="Too short!" class="active" for="passw">Password</label>
+                </div>
+            </div>
+            <button id="register" class="btn waves-effect waves-light" type="submit" name="action">
+                Submit
+                <i class="material-icons right">send</i>
+            </button>
+    </div>
+    </template>
+</dom-module>
+<script>
+    Polymer({
+        is: "register-page",
+        attached: function() {
+            var baseUrl = "";
+            $('#register').click(function(){
+                site.api(
+                    'register',
+                    {
+                        user: $('#user').val(),
+                        passw: $('#passw').val()
+                        // if you need to add more user information, place it here
+                        // details: false
+                    },
+                    function(data) {
+                        if (data == 'userTaken'){
+                            site.toast('Sorry, username taken.');
+                        }
+                        else if (data == 'error' || data == 'False') {
+                            site.toast('Unexpected error');
+                        }
+                        else {
+                            site.toast('Registration Successful!');
+                            // parse the user data
+                            data = JSON.parse(data);
+                            // set the session cookies
+                            $.cookie('session', data['session']);
+                            $.cookie('userID', data['userID']);
+                            $.cookie('userName', data['details']['user']);
+                            // set a global variable for the users details
+                            window.authUser = data.details;
+                            // notify the user that the login was successful.
+                            site.toast('Login Successful!');
+                            // forward the user to the homepage
+                            site.route('/');
+                        }
+                    }
+                );
+            });
+        }
+    });
+</script>

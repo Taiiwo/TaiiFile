@@ -1,0 +1,67 @@
+<dom-module id="eric-projects">
+  <template projectid={{projectid}}>
+    <style>
+    #icon{
+      position: absolute;
+      top: 15px;
+      right: 15px;
+    }
+    </style>
+    <ul class="collection">
+     <li class="collection-item">
+       <h5 class="title" id="title"></h5>
+       <p id="desc"></p>
+       <div id="buttons"></div>
+     </li>
+   </ul>
+  </template>
+</dom-module>
+<script>
+  Polymer({
+    is: 'eric-projects',
+    attached: function() {
+      var project = projectList[this.getAttribute('projectid')];
+      // build roles thing
+      rolesDiv = $('<div>');
+      for (var role in authUser['skills']){
+        if (project.devs[role]["N"] > 0){
+          var button = $('<a>')
+            .addClass('btn')
+            .addClass('waves-effect')
+            .addClass('waves-light')
+            .attr('role', role)
+            .text(
+              role +
+              ': ' +
+              project.devs[role]["A"] + '/' +
+              project.devs[role]["N"]
+            )
+          ;
+          if (authUser.skills[role] < project.devs[role]['S']){
+            button.addClass('disabled');
+          }
+          else {
+            button.click(function(){
+                api(
+                    "selectProject",
+                    {
+                        userID: authUser._id.$oid,
+                        session: $.cookie('session'),
+                        projectID: project._id.$oid,
+                        position: $(this).attr('role')
+                    },
+                    function(data) {
+                        toast("success");
+                        console.log(data);
+                    }
+                );
+            });
+          }
+          rolesDiv.append(button);
+        }
+      $(this.$.title).text(project.projectName);
+      $(this.$.desc).text(project.projectDesc);
+      $(this.$.buttons).append(rolesDiv);
+    }
+  }});
+</script>

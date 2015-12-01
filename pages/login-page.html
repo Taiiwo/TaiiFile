@@ -1,0 +1,78 @@
+<dom-module id="login-page">
+    <template>
+        <style>
+            h2 {
+                font-size: 240%;
+            }
+            .skillSlider {
+                width: 100%;
+                max-width: 440px;
+            }
+        </style>
+        <div class="register-div">
+        <div class="container">
+            <h2>Login</h2>
+            <p>Click to <a id="registerLink">Register</a></p>
+            <div class="row">
+                <div class="input-field col s6">
+                    <input value="" id="user" type="text" class="validate" pattern="\w{1,140}">
+                    <label class="active" for="user" data-error="Too long!">Username</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s6">
+                    <input value="" id="passw" type="password" class="validate"  pattern=".{6,140}">
+                    <label data-error="Too short!" class="active" for="passw">Password</label>
+                </div>
+            </div>
+            <button id="login" class="btn waves-effect waves-light" type="submit" name="action">
+                Login
+                <i class="material-icons right">send</i>
+            </button>
+        </div>
+    </template>
+</dom-module>
+<script>
+    Polymer({
+        is: "login-page",
+        attached: function() {
+            $('#registerLink').click(function() {
+                site.route('/register');
+            });
+            if (site.userAuthed()){
+                // already logged in, you don't need to be here
+                site.route('/');
+            }
+            $('#login').click(function(){
+                site.api(
+                    "login",
+                    {
+                        user: $('#user').val(),
+                        passw: $('#passw').val()
+                    },
+                    function(data) {
+                        // if the login was successful
+                        if (data != "False"){
+                            // parse the user data
+                            data = JSON.parse(data);
+                            // set the session cookies
+                            $.cookie('session', data['session']);
+                            $.cookie('userID', data['userID']);
+                            $.cookie('userName', data['details']['user']);
+                            // set a global variable for the users details
+                            window.authUser = data.details;
+                            // notify the user that the login was successful.
+                            site.toast('Login Successful!');
+                            // forward the user to the homepage
+                            site.route('/');
+                        }
+                        else {
+                            // whoops, wrong username or password
+                            site.toast("Invalid Login.");
+                        }
+                    }
+                );
+            });
+        }
+    });
+</script>
