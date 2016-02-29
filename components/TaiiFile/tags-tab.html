@@ -1,0 +1,123 @@
+<script src="./util.js"></script>
+<dom-module id="tags-tab">
+    <template>
+        <style>
+            #add-group-btn {
+                position: fixed;
+                bottom: 25px;
+                right:25px;
+            }
+        </style>
+        <div class="container">
+            <div class="md-tags">
+### Add Tags and Groups
+Here you can create your tagging system. First, create a group, then add tags to
+that group. Get started by pressing the plus button in the bottom right.
+            </div>
+            <div class="center">
+                <a class="btn-floating btn-large waves-effect waves-light red">
+                    <i class="material-icons">landscape</i>
+                </a>
+                <a class="btn-floating btn-large waves-effect waves-light orange">
+                    <i class="material-icons">flash_on</i>
+                </a>
+                <a class="btn-floating btn-large waves-effect waves-light yellow">
+                    <i class="material-icons">explore</i>
+                </a>
+                <a class="btn-floating btn-large waves-effect waves-light green">
+                    <i class="material-icons">favorite_border</i>
+                </a>
+                <a class="btn-floating btn-large waves-effect waves-light blue">
+                    <i class="material-icons">surround_sound</i>
+                </a>
+                <a class="btn-floating btn-large waves-effect waves-light indigo">
+                    <i class="material-icons">visibility</i>
+                </a>
+                <a class="btn-floating btn-large waves-effect waves-light purple">
+                    <i class="material-icons">filter_vintage</i>
+                </a>
+            </div>
+            <ul class="collapsible popout" data-collapsible="accordion" id="groups">
+            </ul>
+            <a id="add-group-btn" class="btn-floating btn-large waves-effect waves-light red">
+                <i class="material-icons">add</i>
+            </a>
+        </div>
+    </template>
+</dom-module>
+<script>
+    Polymer({
+        is: "tags-tab",
+        attached: function(){
+            site.markdown('.md-tags');
+            $('.collapsible').collapsible();
+
+            // load all files from each folder's dotfile
+            util.get_dir_list(function(e, data){
+                if (e){
+                    site.toast("Failed to read dir_list.json.");
+                }
+                else{
+                    var dir_list = JSON.parse(data);
+                    // iterate the directories
+                    for (var i in dir_list){
+                        var dir = dir_list[i];
+
+                        // get the tag list
+                        util.fs.readFile(dir + "/.tagfile.json", function(e, data, dir){
+                            got_files(e, data, dir);
+                        });
+                    }
+                }
+            });
+            function got_files(e, data, dir){
+                if (e && e.code == "ENOENT"){
+                    // the tag file does not exist. Create a blank one
+                    util.fs.writeFile(
+                        dir + "/.tagfile.json",
+                        JSON.stringify({
+                            tags: {},
+                            groups: {}
+                        }),
+                        function(e) { add_tags(e, data) }
+                    );
+                }
+                else {
+                    add_tags(false, data);
+                }
+
+                function add_tags(e, data){
+                    if (e){
+                        site.toast("There was a problem loading .tagfile.json");
+                    }
+                    else {
+                        // go through the tag groups and list them
+                        var tag_groups = JSON.parse(data)['groups'];
+                        for (var i in tag_groups){
+                            var tag_group = tag_groups[i];
+                            var item = $('<li/>')
+                                .append(
+                                    $('<div/>')
+                                        .addClass('collapsible-header')
+                                        .text(tag_group.name)
+                                        .append($('<i/>')
+                                            .addClass('material-icons')
+                                        )
+                                ,
+                                    $('<div/>')
+                                        .addClass('collapsible-body')
+                                        .append($('div')
+                                            .addClass('edit-group')
+                                        )
+
+                                )
+                            ;
+                            $('#groups').append(item);
+
+                        }
+                    }
+                }
+            }
+        }
+    })
+</script>

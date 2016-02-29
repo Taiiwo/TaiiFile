@@ -1,0 +1,53 @@
+<link rel="import" href="files-tab.html" />
+<link rel="import" href="tags-tab.html" />
+<link rel="import" href="untagged-tab.html" />
+<link rel="import" href="maintainance-tab.html" />
+<dom-module id="taii-file">
+    <template>
+        <style>
+            li.tab > a {
+                color: white;
+            }
+            .tabs{
+                position: fixed;
+                top: 64px;
+            }
+            #scroll-box {
+                position:fixed;
+                top: 112px;
+                bottom: 0;
+                left: 0;
+                right:0;
+                overflow-y: auto;
+            }
+        </style>
+        <div class="col s12">
+          <ul class="tabs cyan">
+            <li class="tab col s3"><a class="active waves-effect" href="#files">Files</a></li>
+            <li class="tab col s3"><a class="waves-effect" href="#tags">Tags</a></li>
+            <li class="tab col s3"><a class="waves-effect" href="#untagged">Untagged</a></li>
+            <li class="tab col s3"><a class="waves-effect" href="#maintainance">Maintainance</a></li>
+            <div class="indicator cyan accent-3" style="z-index:1"></div>
+          </ul>
+        </div>
+        <div id="scroll-box">
+            <div id="files" class="col s12"><files-tab></files-tab></div>
+            <div id="tags" class="col s12"><tags-tab></tags-tab></div>
+            <div id="untagged" class="col s12"><untagged-tab></untagged-tab></div>
+            <div id="maintainance" class="col s12"><maintainance-tab></maintainance-tab></div>
+        </div>
+    </template>
+</dom-module>
+<script>
+    Polymer({
+        is: "taii-file",
+        attached: function() {
+            // markup the markdown
+            //site.markdown('#headContent');
+
+            $('ul.tabs').tabs();
+
+
+        }
+    });
+</script>

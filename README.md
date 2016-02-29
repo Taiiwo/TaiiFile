@@ -1,64 +1,69 @@
-TaiiCMS - The Non-Standard Content Management System
-====================================================
+TaiiFile - The Advanced File Tagging System
+===========================================
 
-TaiiCMS is a content management system written for `mod_python`
-and `mongodb`. It provides a simple way to manage and develop
-a webpage. TaiiCMS attempts to provide the basic features required
-by most projects in a non-intrusive way.
+TaiiFile is a file tagging system like you've never seen before. This
+documentation will go through all the features that sets TaiiFile apart
+from the crowd, how to get started with TaiiFile, and explainations on
+how to expand ontop of TaiiFile.
 
-TaiiCMS is broken up into two parts: authentication, and pagination.
+Features
+--------
 
-Authentication
---------------
+### JSON Tagging System
 
-The authentication services included within TaiiCMS provide a simple
-JSON API to the front end, allowing each page to execute database
-functions as simply as possible. By using this method of authentication,
-it is possible to completely redesign your site, while still allowing
-the front end to authenticate and perform actions on the user. The design
-that comes with TaiiCMS is simply a material design base.
+TaiiFile does not use a database. It maintains a JSON file for each
+directory watched. This file is simple to parse, and you can add it to
+your own system. Using a JSON file for the tag records means that your
+TaiiFile tagging system will work with git, bittorrent sync, Google
+Drive, as well as Windows, Mac, and Linux. You can even view the tagging
+system on readonly file protocols like HTTP and FTP. All we have to do
+is read and search the tag file.
 
-Pagination
-----------
 
-This is where TaiiCMS becomes non-standard. Traditional CMSs save
-content inside a database, allowing it to be retrieved using
-templating systems. TaiiCMS stores none of your content in databases
-and instead stores it in traditional HTML files. The distiction
-between the method used by TaiiCMS and the traditional method of
-storing content inside individual files is that TaiiCMS stores
-it's content within webcomponent-compatible elements known as
-Polymer Elements.
+### Tags and Groups
 
-The Polymer framework allows developers to import Polymer Elements
-in the form of HTML files, and place them on the page. TaiiCMS
-uses a combination of Polymer Elements to load pages from the
-`/pages` directory, and switches between them using JavaScript.
+TaiiFile uses a parent and child based hierarchy to make tagging as
+simple as possible. Each group has inherent groups, and child tags. It's
+like this so that you can add a whole bunch of information that's
+implied automatically.
 
-How to Use TaiiCMS
-------------------
+Here's an example: We have a big messy folder full of pictures of
+different types of animals. In order to create a tagging system to sort
+and search these files, we need to establish a hierarchy. First we
+create an 'animals' group. Then we create a group for 'birds', 'fish',
+'mammals', 'reptiles', 'anphibians', etc... each with the 'animals'
+group listed as a parent. Then you go through all the files, adding tags
+as you go, and adding them to the above categories. You can add more
+groups where you think it's neccesary based on the quantities of animals
+in different categories, but you can easily manage this later. This is a
+single sorting system. You could also add one for colour, skin type,
+hunting group, local region, the list is endless.
 
-### Configuration
-While TaiiCMS is widely configurable in that it is open to modification,
-any configuration options provided by the default installation can be
-found in `index.html`, for front-end configuration; and `api.py`, for
-configuration of the back-end.
+Finally, you'll have a system that is capable of searching for the
+equivalent of "all the green reptile predetors from africa", "all the
+asian cats, except white ones", "only pictures that include both cats
+and dogs". Again, endless possiblities.
 
-### Creating or Editing a Page
-In order to edit or create a page, one must do so within the `/pages`
-directory. Here you must construct a valid polymer element that will
-be displayed in the main content section of the page.
 
-If you are creating a new page, you will need to import and include it
-within `index.html`. You must add an `<import>` tag in the head of the
-document, and an element within the `<app-router>` section of `index.html`.
-Then you will be able to use `site.router('/desination')` to navigate to
-your new page, or simply navigate to `#/desitnation` in the URI.
+### Logical Search Queries
 
-### The API
-The JavaScript library `js/site.js` creates the `site` object. `site`
-controls many of the features of TaiiCMS, and it is reccomended that it
-is kept, as long as you are still using TaiiCMS's pagination.
+TaiiFile includes a search query language that adds context to items
+with 'pills'. A pill is a pipe delimited pair of group and tag, for
+example: "animal|cat" or "mammal|cat" are both equivalent. Then you can
+apply operators:
 
-The JavaScript library `js/api.js` creates the `api` object. `api`
-contains all of the wrapping for TaiiCMS's Python API.
+| operator | meaning                                                    |
+|----------|------------------------------------------------------------|
+| +        | also - animals|dog+cat: dogs, cats, and both dogs and cats |
+| -        | not - animals|dog-cat: Dogs without cats                   |
+| &        | and - animals|dog&cat: Dogs and cats. Only both.           |
+| /        | or - animals|dog/cat: Only dogs or Only cats. Not both.    |
+| !        | only - animals|dog!: Just dogs. Nothing else.              |
+
+
+### Smart Tags
+
+### Auto Tags
+
+
+Developing with TaiiFile

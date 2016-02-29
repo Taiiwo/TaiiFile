@@ -1,10 +1,9 @@
 function Site() {
     // Send a toast notification.
     this.toast = function(message){
-        var toast = $('#toast')[0];
-        toast.text = message;
-        toast.show();
+        Materialize.toast(message, 4000);
     }
+
     // Make a call to the api.
     this.api = function(action, data, callback){
         var baseURL = "";
@@ -34,14 +33,18 @@ function Site() {
             return true;
         }
     }
+    // Adds content to a modal notification.
+    // title: the title string
+    // text: The html contents of the modal
+    // buttons: a list of buttons
+    // button[0]: button text
+    // button[1]: button colour
+    // button[2]: button click callback
     this.notify = function(title, text, buttons){
-        $('#notification').empty();
-        var buttonDiv = $('<div/>')
-            .attr('id', 'buttons')
-        ;
+        $('#notify-modal .modal-footer').empty();
         for (var i in buttons) {
             var button = buttons[i];
-            buttonDiv.append(
+            $('#notify-modal .modal-footer').append(
                 $('<a/>')
                     .addClass('waves-effect')
                     .addClass('waves-light')
@@ -51,91 +54,23 @@ function Site() {
                     .click(button[2])
             );
         }
-        $('#notification').append(
-            $('<h2/>')
+        $('#notify-modal .modal-content').empty();
+        $('#notify-modal .modal-content').append(
+            $('<h3/>')
                 .text(title),
             $('<p/>')
-                .text(text),
-            buttonDiv
+                .html(text)
         );
     }
+    this.modal_open = false;
     this.notify_toggle = function(){
-        $('#notification')[0].toggle();
-    }
-    this.navbar_mode = function(mode){
-        $('#nav-mobile').empty();
-        if (mode == "unauthed"){
-            $('#nav-mobile').append(
-                $('<li/>')
-                    .attr('id', 'register-button')
-                    .text("Register")
-                    .click(
-                        function() {
-                            site.route('/register');
-                        }
-                    )
-            );
-            var w = $('#register-button').width() + 21;
-            $('#register-button').css({"width": w});
-            $('#nav-mobile').append(
-                $('<li/>')
-                    .attr('id', 'login-button')
-                    .text("Login")
-                    .click(
-                        function() {
-                            site.route('/login');
-                        }
-                    )
-            );
-            var w = $('#login-button').width() + 21;
-            $('#login-button').css({"width": w});
+        if (this.modal_open){
+            $('#notify-modal').closeModal();
+            this.modal_open = false;
         }
-        else if (mode = 'authed') {
-            // add welcome message
-            $('#nav-mobile').append(
-                $('<li/>')
-                    .attr('id', 'user-div')
-                    .text(
-                        "Hello, " + $.cookie('userName')
-                    )
-            );
-            // fix padding (Because we don't know how long the username is)
-            var w = $('#user-div').width() + 21;
-            $('#user-div').css({"width": w});
-            // on mouse over, show logout button
-            $('#user-div')
-              .mouseover(function(){
-                $('#user-div')
-                  .text("Logout")
-                  .click(function(){
-                    $.removeCookie('session');
-                    $.removeCookie('userID');
-                    $.removeCookie('userName');
-                    $('#user-div').empty();
-                    $('#user-div').off();
-                    site.route('/');
-                  })
-                ;
-              })
-              .mouseout(function(){
-                $('#user-div')
-                  .text("Hello, " + $.cookie('userName'))
-                  .off('click')
-                ;
-              })
-            ;
-            // Show 'my account' button
-            $('#nav-mobile').append(
-                $('<li/>')
-                    .attr('id', 'my-account')
-                    .text(
-                        "My Account"
-                    )
-                    .css('padding-right', '15px')
-                    .click(function(){
-                        site.route('/my-account');
-                    })
-            );
+        else {
+            $('#notify-modal').openModal();
+            this.modal_open = true;
         }
     }
 }

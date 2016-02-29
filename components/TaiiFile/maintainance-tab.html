@@ -1,0 +1,88 @@
+<dom-module id="maintainance-tab">
+    <template>
+        <div class="container">
+            <div class="md-maintainance">
+### Maintainence
+Here you can configure which directories are watched, and you can do other
+general maintainence tasks.
+
+Start by adding a tag directory.
+            </div>
+            <a class="waves-effect waves-light btn cyan darken-1" id="add-folder">
+                Add Folder
+            </a>
+            <ul class="collection" id="folder-list">
+            </ul>
+        </div>
+    </template>
+</dom-module>
+<script>
+    Polymer({
+        is: "maintainance-tab",
+        attached: function(){
+            // load markdown
+            site.markdown(".md-maintainance");
+            // load directory file
+            reload_folder_list();
+            // Adds a directory to the dir_list file
+            $('#add-folder').click(function(){
+                // select folder
+                var dialog = require('remote').require('dialog');
+                var folder_list = dialog.showOpenDialog({
+                    title: "Select a Folder for Tagging",
+                    properties: [
+                        "openDirectory",
+                        "createDirectory",
+                        "multiSelections"
+                    ]
+                });
+                // add folder(s) to dir_list
+                util.get_dir_list(function (e, data){
+                    if (e) site.toast("Failed to read dir_list.json");
+                    var dir_list = JSON.parse(data);
+                    for (var i in folder_list){
+                        var folder = folder_list[i];
+                        // make a new entry for each folder
+                        dir_list[folder] = [];
+                    }
+                    // save dir_list to file
+                    util.write_dir_list(
+                        JSON.stringify(dir_list),
+                        function (e){
+                            reload_folder_list();
+                        }
+                    );
+                });
+            });
+            // Reads the dir_list and writes it to the page
+            function reload_folder_list(){
+                var fs = require('fs');
+                dir_list =  util.fs.readFile(
+                    util.home + "/.taiifile/dir_list.json",
+                    "utf8",
+                    function (e, data){
+                        $('#folder-list').empty();
+                        var dir_list = JSON.parse(data);
+                        for (var i in dir_list){
+                            var path = dir_list[i];
+                            $('#folder-list').append(
+                                $('<li/>')
+                                .addClass('collection-item')
+                                .append($('<div/>')
+                                    .text(path)
+                                    .append($('<a/>')
+                                        .addClass('secondary-content')
+                                        .append($('<i/>')
+                                            .addClass('material-icons')
+                                            .text('delete')
+                                        )
+                                    )
+                                )
+                            )
+                        }
+                    }
+                )
+            }
+        }
+    });
+</script>
