@@ -51,13 +51,13 @@ with 'pills'. A pill is a pipe delimited pair of group and tag, for
 example: "animal|cat" or "mammal|cat" are both equivalent. Then you can
 apply operators:
 
-| operator | meaning                                                    |
-|----------|------------------------------------------------------------|
-| +        | also - animals|dog+cat: dogs, cats, and both dogs and cats |
-| -        | not - animals|dog-cat: Dogs without cats                   |
-| &        | and - animals|dog&cat: Dogs and cats. Only both.           |
-| /        | or - animals|dog/cat: Only dogs or Only cats. Not both.    |
-| !        | only - animals|dog!: Just dogs. Nothing else.              |
+| operator | meaning                                                     |
+|----------|-------------------------------------------------------------|
+| +        | also - animals\|dog+cat: dogs, cats, and both dogs and cats |
+| -        | not - animals\|dog-cat: Dogs without cats                   |
+| &        | and - animals\|dog&cat: Dogs and cats. Only both.           |
+| /        | or - animals\|dog/cat: Only dogs or Only cats. Not both.    |
+| !        | only - animals\|dog!: Just dogs. Nothing else.              |
 
 
 ### Smart Tags
