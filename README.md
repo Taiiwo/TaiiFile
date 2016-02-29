@@ -59,8 +59,26 @@ apply operators:
 | /        | or - animals\|dog/cat: Only dogs or Only cats. Not both.    |
 | !        | only - animals\|dog!: Just dogs. Nothing else.              |
 
+Query examples:
+
+- colour|green & animals|reptile & hunting-group|predetor & region|africa
+- animals|cat & region|asia - colour|white
+- animals|cats&dogs
+
 
 ### Smart Tags
+
+A smart tag is a tag group that can be applied by itsself, and it is
+automatically assigned a value. When creating a smart tag, simply add a
+python script to the tag group. Example python script for a smart tag
+that adds the current time to a file:
+
+```python
+import time
+def main(path):
+    return int(time.time())
+```
+
 
 ### Auto Tags
 
