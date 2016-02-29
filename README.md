@@ -1,5 +1,4 @@
 TaiiFile - The Advanced File Tagging System
-===========================================
 
 TaiiFile is a file tagging system like you've never seen before. This
 documentation will go through all the features that sets TaiiFile apart
